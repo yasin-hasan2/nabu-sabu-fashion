@@ -102,7 +102,7 @@ const CollectionsPage = () => {
               >
                 <div className="relative h-72 overflow-hidden">
                   <img
-                    src={product.productImage}
+                    src={product.productImages?.[0] || product.productImage}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />

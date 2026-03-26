@@ -12,8 +12,14 @@ export const useUserProfile = () => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);
+        const token = localStorage.getItem("token");
         const response = await axios.get(`${API_URL}/profile`, {
           withCredentials: true, // Send cookies with request
+          headers: token
+            ? {
+                Authorization: `Bearer ${token}`,
+              }
+            : undefined,
         });
 
         if (response.data.success && response.data.user) {
@@ -53,6 +59,7 @@ export const useUserProfile = () => {
       });
       setUser(null);
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     } catch (err) {
       console.error("Logout error:", err);
     }

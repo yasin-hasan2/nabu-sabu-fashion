@@ -14,12 +14,12 @@ const router = express.Router();
 
 router
   .route("/add-product")
-  .post(protect, upload.single("productImage"), addProduct);
+  .post(protect, upload.array("productImages", 4), addProduct);
 router.route("/get-products").get(getAllProducts);
 router.route("/get-product/:id").get(getProductById);
 router
   .route("/edit-product/:id")
-  .put(protect, upload.single("productImage"), editProduct);
+  .put(protect, upload.array("productImages", 4), editProduct);
 router.route("/delete-product/:id").delete(protect, deleteProduct);
 
 export default router;

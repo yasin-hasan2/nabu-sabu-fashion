@@ -13,7 +13,7 @@ export const useProducts = () => {
       try {
         setLoading(true);
         const response = await axios.get(`${API_URL}/get-products`, {
-          withCredentials: true,
+          withCredentials: true, // Send cookies with request
         });
 
         if (response.data.success && response.data.products) {

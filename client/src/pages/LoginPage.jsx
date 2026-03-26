@@ -126,9 +126,12 @@ const LoginPage = () => {
         setMessage("Login successful! Redirecting...");
         setLoginData({ email: "", password: "" });
 
-        // Store user info if available
+        // Store user info and token if available
         if (response.data.user) {
           localStorage.setItem("user", JSON.stringify(response.data.user));
+        }
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
         }
 
         // Redirect to home or dashboard after 1.5 seconds

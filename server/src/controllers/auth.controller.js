@@ -55,16 +55,14 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Invalid Password" });
     }
 
-    // Generate token and return user data
-    const userWithoutPassword = user.toObject();
-    delete userWithoutPassword.password;
+    // Generate token and return user data (without the password hash)
+    const safeUser = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    };
 
-    generateToken(res, user, "Login successful");
-    // return res.status(200).json({
-    //   success: true,
-    //   message: "Login successful",
-    //   user: userWithoutPassword,
-    // });
+    generateToken(res, user._id, safeUser, "Login successful");
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
@@ -109,16 +107,8 @@ export const getUserProfile = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.userId).select("-password");
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    res.status(200).json({ success: true, user });
+    // req.user is already fetched by the protect middleware
+    res.status(200).json({ success: true, user: req.user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });

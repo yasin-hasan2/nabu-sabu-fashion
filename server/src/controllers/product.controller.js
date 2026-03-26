@@ -13,6 +13,7 @@ export const addProduct = async (req, res) => {
       stock,
       returnPolicy,
       ratings,
+      sellingCount,
       colors,
       motive,
     } = req.body;
@@ -22,18 +23,19 @@ export const addProduct = async (req, res) => {
     }
 
     console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
+    console.log("FILES:", req.files);
 
-    // get file path from multer
-    const imagePath = req.file ? req.file.path : null;
+    let imageUrls = [];
 
-    let imageUrl = null;
-    if (req.file) {
-      const result = await uploadImage(imagePath);
-      imageUrl = result.secure_url;
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const result = await uploadImage(file.path);
+        console.log("Cloudinary Result:", result);
+        imageUrls.push(result.secure_url);
+        console.log("Uploaded Image URL:", result.secure_url);
+      }
     }
 
-    console.log("Image URL:", imageUrl);
     const newProduct = new Product({
       name,
       category,
@@ -44,9 +46,10 @@ export const addProduct = async (req, res) => {
       stock,
       returnPolicy,
       ratings,
+      sellingCount,
       colors,
       motive,
-      productImage: imageUrl,
+      productImages: imageUrls,
     });
 
     await newProduct.save();
@@ -79,6 +82,7 @@ export const editProduct = async (req, res) => {
       stock,
       returnPolicy,
       ratings,
+      sellingCount,
       colors,
       motive,
     } = req.body;
@@ -96,13 +100,17 @@ export const editProduct = async (req, res) => {
       product.stock = stock || product.stock;
       product.returnPolicy = returnPolicy || product.returnPolicy;
       product.ratings = ratings || product.ratings;
+      product.sellingCount = sellingCount || product.sellingCount;
       product.colors = colors || product.colors;
       product.motive = motive || product.motive;
     }
-    if (req.file) {
-      const imagePath = req.file.path;
-      const result = await uploadImage(imagePath);
-      product.productImage = result.secure_url;
+    if (req.files && req.files.length > 0) {
+      const imageUrls = [];
+      for (const file of req.files) {
+        const result = await uploadImage(file.path);
+        imageUrls.push(result.secure_url);
+      }
+      product.productImages = imageUrls;
     }
     await product.save();
     res.status(200).json({
@@ -157,14 +165,37 @@ export const getProductById = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
-  // Placeholder for deleting a product
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+    const user = req.user; // Get user info from auth middleware
+    console.log("User from auth middleware:", user);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized",
+      });
     }
-    await product.remove();
+
+    // Check admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to delete product",
+      });
+    }
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    await product.deleteOne();
+
     res.status(200).json({
       success: true,
       message: "Product deleted successfully",
@@ -172,6 +203,7 @@ export const deleteProduct = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
+      success: false,
       message: "Error deleting product",
       error: error.message,
     });

@@ -5,7 +5,8 @@ import CollectionsPage from "./pages/CollectionsPage";
 import OrderPage from "./pages/OrderPage";
 import LoginPage from "./pages/LoginPage";
 import ProductDetails from "./components/shared/ProductDetails";
-import AddProduct from "./components/shared/AddProduct";
+import AddProduct from "./pages/AddProduct";
+import EditProduct from "./pages/EditProduct";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/product/:productId" element={<ProductDetails />} />
       <Route path="/add-product" element={<AddProduct />} />
+      <Route path="/edit-product/:productId" element={<EditProduct />} />
     </Routes>
   );
 }

@@ -2,48 +2,50 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Star, ShoppingCart, Link } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useProducts } from "../../hooks/useProducts";
 
-const products = [
-  {
-    id: 1,
-    name: "Summer Floral Dress",
-    price: "1,250৳",
-    rating: 4.8,
-    image:
-      "https://cdn.pixabay.com/photo/2016/11/16/04/04/girl-1828112_1280.jpg",
-    category: "Women",
-  },
-  {
-    id: 2,
-    name: "Elegant Evening Gown",
-    price: "3,500৳",
-    rating: 4.9,
-    image:
-      "https://cdn.pixabay.com/photo/2016/10/03/19/30/freedom-1712590_1280.jpg",
-    category: "Women",
-  },
-  {
-    id: 3,
-    name: "Kids Party Frock",
-    price: "950৳",
-    rating: 4.7,
-    image:
-      "https://cdn.pixabay.com/photo/2020/12/10/00/00/little-girl-5819025_1280.jpg",
-    category: "Kids",
-  },
-  {
-    id: 4,
-    name: "Traditional Silk Wear",
-    price: "2,800৳",
-    rating: 5.0,
-    image:
-      "https://cdn.pixabay.com/photo/2016/11/14/03/44/girls-1822521_1280.jpg",
-    category: "Women",
-  },
-];
+// const products = [
+//   {
+//     id: 1,
+//     name: "Summer Floral Dress",
+//     price: "1,250৳",
+//     rating: 4.8,
+//     image:
+//       "https://cdn.pixabay.com/photo/2016/11/16/04/04/girl-1828112_1280.jpg",
+//     category: "Women",
+//   },
+//   {
+//     id: 2,
+//     name: "Elegant Evening Gown",
+//     price: "3,500৳",
+//     rating: 4.9,
+//     image:
+//       "https://cdn.pixabay.com/photo/2016/10/03/19/30/freedom-1712590_1280.jpg",
+//     category: "Women",
+//   },
+//   {
+//     id: 3,
+//     name: "Kids Party Frock",
+//     price: "950৳",
+//     rating: 4.7,
+//     image:
+//       "https://cdn.pixabay.com/photo/2020/12/10/00/00/little-girl-5819025_1280.jpg",
+//     category: "Kids",
+//   },
+//   {
+//     id: 4,
+//     name: "Traditional Silk Wear",
+//     price: "2,800৳",
+//     rating: 5.0,
+//     image:
+//       "https://cdn.pixabay.com/photo/2016/11/14/03/44/girls-1822521_1280.jpg",
+//     category: "Women",
+//   },
+// ];
 
 const MostSellingProducts = () => {
   const navigate = useNavigate();
+  const { products } = useProducts();
 
   return (
     <section className="py-20 bg-brand-cream/30">
@@ -66,11 +68,11 @@ const MostSellingProducts = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              onClick={() => navigate(`/product/${product.id}`)}
+              onClick={() => navigate(`/product/${product._id}`)}
             >
               <div className="relative h-64 overflow-hidden">
                 <img
-                  src={product.image}
+                  src={product.productImages?.[0] || product.productImage}
                   alt={product.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />

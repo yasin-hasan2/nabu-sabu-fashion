@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../components/shared/Loading";
 
 function AddProduct() {
   const navigate = useNavigate();
@@ -15,13 +15,18 @@ function AddProduct() {
     price: "",
     sizes: [],
     stock: "",
+    returnPolicy: "",
+    ratings: "",
+    sellingCount: "",
+    colors: "",
+    motive: "",
     isActive: true,
   });
 
   console.log("Current product data:", productData);
 
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
 
   const availableSizes = ["XS", "S", "M", "L", "XL"];
 
@@ -54,15 +59,50 @@ function AddProduct() {
   };
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreview(URL.createObjectURL(file));
+    const newFiles = Array.from(e.target.files);
+
+    if (!newFiles.length) return;
+
+    // Check total images (existing + new)
+    const totalImages = imageFiles.length + newFiles.length;
+    if (totalImages > 4) {
+      alert(
+        `You already have ${imageFiles.length} image(s). You can only upload a maximum of 4 images total.`,
+      );
+      e.target.value = ""; // Reset input
+      return;
     }
+
+    // Validate: Only images
+    const validImages = newFiles.every((file) =>
+      file.type.startsWith("image/"),
+    );
+    if (!validImages) {
+      alert("Please select only image files");
+      e.target.value = ""; // Reset input
+      return;
+    }
+
+    // Add new files to existing ones
+    const combinedFiles = [...imageFiles, ...newFiles];
+    setImageFiles(combinedFiles);
+
+    // Create previews for new images
+    const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file));
+    setPreviews([...previews, ...newPreviewUrls]);
+
+    // Clear the input so the same file can be selected again if needed
+    e.target.value = "";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate at least 1 image is selected
+    if (imageFiles.length === 0) {
+      alert("Please upload at least 1 product image");
+      return;
+    }
 
     const formData = new FormData();
 
@@ -72,16 +112,20 @@ function AddProduct() {
     formData.append("description", productData.description);
     formData.append("price", productData.price);
     formData.append("stock", productData.stock);
+    formData.append("returnPolicy", productData.returnPolicy);
+    formData.append("ratings", productData.ratings);
+    formData.append("sellingCount", productData.sellingCount);
+    formData.append("colors", productData.colors);
+    formData.append("motive", productData.motive);
     formData.append("isActive", productData.isActive);
 
     productData.sizes.forEach((size) => {
       formData.append("sizes", size);
     });
 
-    if (imageFile) {
-      formData.append("productImage", imageFile);
-      console.log("Image file appended:", imageFile);
-    }
+    imageFiles.forEach((file) => {
+      formData.append("productImages", file);
+    });
 
     // show formdata in console properly
     console.log("Submitted Data:", productData);
@@ -110,7 +154,17 @@ function AddProduct() {
       console.log("Server Response:", data);
     } catch (error) {
       console.error("Upload error:", error);
+      setLoading(false);
+      alert("Error uploading product. Please try again.");
     }
+  };
+
+  const handleRemoveImage = (index) => {
+    const updatedFiles = imageFiles.filter((_, i) => i !== index);
+    const updatedPreviews = previews.filter((_, i) => i !== index);
+
+    setImageFiles(updatedFiles);
+    setPreviews(updatedPreviews);
   };
 
   const handleCancel = () => {
@@ -122,10 +176,18 @@ function AddProduct() {
       price: "",
       sizes: [],
       stock: "",
+      returnPolicy: "",
+      ratings: "",
+      sellingCount: "",
+      colors: "",
+      motive: "",
       isActive: true,
     });
-    setImageFile(null);
-    setPreview(null);
+    setImageFiles([]);
+    setPreviews([]);
+    // Clear file input
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) fileInput.value = "";
   };
 
   if (loading) {
@@ -143,7 +205,7 @@ function AddProduct() {
 
           <button
             onClick={() => navigate(-1)}
-            className="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-sm"
+            className="px-4 py-2 rounded-full bg-gray-200 hover:bg-pink-400 text-sm"
           >
             ← Back
           </button>
@@ -151,7 +213,7 @@ function AddProduct() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6 items-center">
             <div>
               <label className="block mb-1 font-medium">Product Name</label>
               <input
@@ -164,12 +226,13 @@ function AddProduct() {
               />
             </div>
 
-            <div>
+            <div className="  ">
+              <label className="block mb-1 font-medium">Category</label>
               <select
                 name="category"
                 value={productData.category}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
+                className="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-pink-400 outline-none"
               >
                 <option value="">Select Category</option>
                 <option value="Kids">Kids</option>
@@ -232,31 +295,97 @@ function AddProduct() {
               />
             </div>
           </div>
+          <div className="grid grid-cols-4 gap-6">
+            {/* Colors */}
+            <input
+              type="text"
+              name="colors"
+              placeholder="Available Colors"
+              value={productData.colors}
+              onChange={handleChange}
+              className=" w-full border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
+            />
+            {/* Return Policy */}
+            <input
+              type="text"
+              name="returnPolicy"
+              placeholder="Return Policy"
+              value={productData.returnPolicy}
+              onChange={handleChange}
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
+            />
+            {/* Ratings */}
+            <input
+              type="number"
+              name="ratings"
+              placeholder="Ratings"
+              value={productData.ratings}
+              onChange={handleChange}
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
+            />
+            {/* Selling Count */}
+            <input
+              type="number"
+              name="sellingCount"
+              placeholder="Selling Count"
+              value={productData.sellingCount}
+              onChange={handleChange}
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none"
+            />
+          </div>
+
+          <div>
+            {/* Motive */}
+            <input
+              type="text"
+              name="motive"
+              placeholder="Motive / Design Type"
+              value={productData.motive}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
 
           {/* Image Upload */}
           <div>
             <label className="block mb-2 font-medium">
-              Upload Product Image
+              Upload Product Images ({previews.length}/4)
             </label>
 
             <label className="flex flex-col items-center justify-center border-2 border-dashed border-pink-300 rounded-xl p-6 cursor-pointer hover:bg-pink-50 transition">
-              <span className="text-sm text-gray-600">
-                Click to upload image
+              <span className="text-sm text-gray-600 mb-2">
+                Click to upload images (max 4)
               </span>
+
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={handleImageUpload}
                 className="hidden"
               />
             </label>
 
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="mt-4 w-40 h-40 object-cover rounded-lg shadow"
-              />
+            {/* Image Preview */}
+            {previews.length > 0 && (
+              <div className="flex gap-4 mt-4 flex-wrap">
+                {previews.map((img, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={img}
+                      alt="preview"
+                      className="w-28 h-28 object-cover rounded-lg shadow-md border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transform translate-x-2 -translate-y-2"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 
