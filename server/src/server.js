@@ -6,6 +6,7 @@ import connectDb from "./database/db.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -35,6 +36,7 @@ app.get("/home", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Start the server
 app.listen(PORT, () => {

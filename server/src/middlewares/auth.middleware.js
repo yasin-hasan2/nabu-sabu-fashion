@@ -25,7 +25,7 @@ export const protect = async (req, res, next) => {
 
     // 🔥 Fetch full user from DB
     const user = await User.findById(decoded.userId).select("-password");
-    console.log("user from auth middleware:", user);
+    // console.log("user from auth middleware:", user);
 
     if (!user) {
       return res.status(401).json({
