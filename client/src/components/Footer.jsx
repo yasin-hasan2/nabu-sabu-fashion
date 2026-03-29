@@ -14,6 +14,19 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} Nabu Sabu Fashion. All rights
           reserved.
         </div>
+        <div className="text-center text-sm text-gray-500 py-4">
+          <span>
+            {/* © {new Date().getFullYear()} */}• Developed by{" "}
+            <a
+              href="https://www.linkedin.com/in/yasin-al-hasan-05a16425a"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold hover:text-black transition"
+            >
+              Yasin Al Hasan
+            </a>
+          </span>
+        </div>
       </div>
     </footer>
   );
