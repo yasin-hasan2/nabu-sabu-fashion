@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/auth";
+const API =
+  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
+const API_URL = `${API}/api/auth`;
 
 export const useUserProfile = () => {
   const [user, setUser] = useState(null);

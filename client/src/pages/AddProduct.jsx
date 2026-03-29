@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/shared/Loading";
 
+const API =
+  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
+
+const apiUrl = `${API}/api/products/add-product`;
+
 function AddProduct() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -135,14 +140,11 @@ function AddProduct() {
 
     try {
       setLoading(true);
-      const res = await fetch(
-        "http://localhost:5000/api/products/add-product",
-        {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        },
-      );
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
 
       const data = await res.json();
       if (data.success) {

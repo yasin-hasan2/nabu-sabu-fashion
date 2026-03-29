@@ -4,10 +4,10 @@ import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, User, ArrowRight, Facebook, Chrome } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
+import API from "../utils/api";
 
-const API_URL = "http://localhost:5000/api/auth";
-
+console.log("LoginPage API base URL:", API.defaults.baseURL);
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -68,8 +68,8 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${API_URL}/register`,
+      const response = await API.post(
+        `/api/auth/register`,
         {
           username: signupData.username,
           email: signupData.email,
@@ -79,7 +79,7 @@ const LoginPage = () => {
           withCredentials: true, // to include cookies in the request
         },
       );
-
+      console.log("Signup response:", response);
       if (response.data.success) {
         setMessage("Account created successfully! Redirecting to login...");
         setTimeout(() => {
@@ -111,8 +111,8 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${API_URL}/login`,
+      const response = await API.post(
+        `/api/auth/login`,
         {
           email: loginData.email,
           password: loginData.password,
@@ -121,7 +121,7 @@ const LoginPage = () => {
           withCredentials: true, // to include cookies in the request
         },
       );
-
+      console.log("Login response:", response);
       if (response.data.success) {
         setMessage("Login successful! Redirecting...");
         setLoginData({ email: "", password: "" });

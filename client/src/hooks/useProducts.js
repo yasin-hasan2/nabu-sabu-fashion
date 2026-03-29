@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/products";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const useProducts = () => {
   const [products, setProducts] = useState([]);
@@ -12,9 +12,12 @@ export const useProducts = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/get-products`, {
-          withCredentials: true, // Send cookies with request
-        });
+        const response = await axios.get(
+          `${API_URL}/api/products/get-products`,
+          {
+            withCredentials: true, // Send cookies with request
+          },
+        );
 
         if (response.data.success && response.data.products) {
           setProducts(response.data.products);

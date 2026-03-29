@@ -6,7 +6,9 @@ import Loading from "./Loading";
 import { useUserProfile } from "../../hooks/useUserProfile";
 // import BrandName from "./BrandName";
 
-const apiUrl = "http://localhost:5000/api/products";
+const API =
+  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
+const apiUrl = `${API}/api/products`;
 
 function ProductDetails() {
   const { productId } = useParams();
@@ -56,7 +58,7 @@ function ProductDetails() {
       setDeleting(true);
 
       const res = await fetch(
-        `http://localhost:5000/api/products/delete-product/${productId}`,
+        `${API}/api/products/delete-product/${productId}`,
         {
           method: "DELETE",
           credentials: "include", // 🔥 REQUIRED FOR COOKIES

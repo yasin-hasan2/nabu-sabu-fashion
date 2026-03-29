@@ -11,7 +11,8 @@ export const useReviews = () => {
 
   const { showToast, updateToast } = useToast();
 
-  const API = "http://localhost:5000/api/reviews";
+  const API =
+    import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
 
   // ✅ GET ALL REVIEWS
   const fetchReviews = async () => {
@@ -70,7 +71,7 @@ export const useReviews = () => {
 
     try {
       const { data } = await axios.put(
-        `${API}/update-review/${id}`,
+        `${API}/api/reviews/update-review/${id}`,
         updatedData,
         { withCredentials: true },
       );

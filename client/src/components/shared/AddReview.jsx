@@ -3,8 +3,9 @@ import { Star } from "lucide-react";
 import axios from "axios";
 import { useToast } from "../../ToastContext";
 
-// const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const apiUrl = "http://localhost:5000/api/reviews";
+const apiUrl =
+  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
+// const apiUrl = "http://localhost:5000/api/reviews";
 
 const AddReview = ({
   isOpen,
@@ -62,7 +63,7 @@ const AddReview = ({
       } else {
         // ➕ ADD MODE
         await axios.post(
-          `${apiUrl}/add-review`,
+          `${apiUrl}/api/reviews/add-review`,
           { name, rating, comment },
           { withCredentials: true },
         );

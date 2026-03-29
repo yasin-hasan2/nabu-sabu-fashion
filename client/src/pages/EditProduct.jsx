@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-const apiUrl = "http://localhost:5000/api/products";
+const API =
+  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
+
+const apiUrl = `${API}/api/products`;
 
 function EditProduct() {
   const { productId } = useParams();
