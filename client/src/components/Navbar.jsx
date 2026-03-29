@@ -238,6 +238,16 @@ const Navbar = () => {
               >
                 Contact
               </button>
+              <button
+                onClick={() => navigate("/add-product")}
+                className="bg-pink-500 text-white px-5 py-2 rounded-full hover:bg-pink-600 transition-colors shadow-md flex items-center gap-2 text-sm font-medium"
+                style={{
+                  display:
+                    user && user.role === "admin" ? "inline-flex" : "none",
+                }}
+              >
+                Add Product
+              </button>
             </>
           ) : (
             <>
