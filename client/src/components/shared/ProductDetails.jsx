@@ -4,11 +4,8 @@ import { useProducts } from "../../hooks/useProducts";
 import { motion } from "framer-motion";
 import Loading from "./Loading";
 import { useUserProfile } from "../../hooks/useUserProfile";
+import API from "../../utils/api";
 // import BrandName from "./BrandName";
-
-const API =
-  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
-const apiUrl = `${API}/api/products`;
 
 function ProductDetails() {
   const { productId } = useParams();
@@ -33,16 +30,16 @@ function ProductDetails() {
 
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`${apiUrl}/get-product/${productId}`);
+        const res = await API.get(`/api/products/get-product/${productId}`);
 
-        const data = await res.json();
+        const data = res.data;
 
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to fetch product");
+        if (!data) {
+          throw new Error("Failed to fetch product");
         }
 
         setProduct(data.product);
-        setMainImage(data.product.productImage); // set default image
+        setMainImage(data.product.productImage);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -57,17 +54,16 @@ function ProductDetails() {
     try {
       setDeleting(true);
 
-      const res = await fetch(
-        `${API}/api/products/delete-product/${productId}`,
+      const res = await API.delete(
+        `/api/products/delete-product/${productId}`,
         {
-          method: "DELETE",
-          credentials: "include", // 🔥 REQUIRED FOR COOKIES
+          withCredentials: true,
         },
       );
 
-      const data = await res.json();
+      const data = await res.data;
 
-      if (!res.ok) {
+      if (!data.success) {
         throw new Error(data.message || "Failed to delete product");
       }
 

@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-
-const API =
-  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
-const API_URL = `${API}/api/auth`;
+// import axios from "axios";
+import API from "../utils/api";
 
 export const useUserProfile = () => {
   const [user, setUser] = useState(null);
@@ -15,7 +12,7 @@ export const useUserProfile = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/profile`, {
+        const response = await API.get(`/api/auth/profile`, {
           withCredentials: true, // Send cookies with request
           headers: token
             ? {
@@ -56,7 +53,7 @@ export const useUserProfile = () => {
 
   const logout = async () => {
     try {
-      await axios.get(`${API_URL}/logout`, {
+      await API.get(`/api/auth/logout`, {
         withCredentials: true,
       });
       setUser(null);

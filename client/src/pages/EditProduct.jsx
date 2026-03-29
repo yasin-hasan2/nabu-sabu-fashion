@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-
-const API =
-  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
-
-const apiUrl = `${API}/api/products`;
+import API from "../utils/api";
 
 function EditProduct() {
   const { productId } = useParams();
@@ -40,7 +36,7 @@ function EditProduct() {
 
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/get-product/${productId}`, {
+        const res = await API.get(`/api/products/get-product/${productId}`, {
           withCredentials: true,
         });
 
@@ -134,7 +130,7 @@ function EditProduct() {
         formData.append("productImages", img);
       });
 
-      await axios.put(`${apiUrl}/edit-product/${productId}`, formData, {
+      await API.put(`/api/products/edit-product/${productId}`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

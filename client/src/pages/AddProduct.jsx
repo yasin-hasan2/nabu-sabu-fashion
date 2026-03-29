@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/shared/Loading";
-
-const API =
-  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
-
-const apiUrl = `${API}/api/products/add-product`;
+import API from "../utils/api";
 
 function AddProduct() {
   const navigate = useNavigate();
@@ -140,10 +136,8 @@ function AddProduct() {
 
     try {
       setLoading(true);
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      const res = await API.post("/api/products/add-product", formData, {
+        withCredentials: true,
       });
 
       const data = await res.json();

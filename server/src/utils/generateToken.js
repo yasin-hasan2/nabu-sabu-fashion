@@ -13,8 +13,8 @@ export const generateToken = (res, userId, user, message) => {
   return res
     .cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true, // set to true in production (requires HTTPS)
+      sameSite: "none", // allow cross-site cookies (required for secure cookies)
       maxAge: 3600000, // 1 hour
     })
     .status(200)
