@@ -77,8 +77,8 @@ export const logout = async (req, res) => {
         maxAge: 0,
         httpOnly: true,
         expires: new Date(0),
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: true, // set to true in production (requires HTTPS)
+        sameSite: "none", // allow cross-site cookies (required for secure cookies)
       })
       .status(200)
       .json({ success: true, message: "Logout successful" });
