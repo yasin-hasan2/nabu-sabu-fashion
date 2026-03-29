@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
-import axios from "axios";
+// import axios from "axios";
 import { useToast } from "../../ToastContext";
-
-const apiUrl =
-  import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
-// const apiUrl = "http://localhost:5000/api/reviews";
+import API from "../../utils/api";
 
 const AddReview = ({
   isOpen,
@@ -20,6 +17,7 @@ const AddReview = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { showToast, updateToast } = useToast();
+  const MAX_LENGTH = 90; // max characters for review comment
 
   useEffect(() => {
     if (selectedReview) {
@@ -62,8 +60,8 @@ const AddReview = ({
         });
       } else {
         // ➕ ADD MODE
-        await axios.post(
-          `${apiUrl}/api/reviews/add-review`,
+        await API.post(
+          `/api/reviews/add-review`,
           { name, rating, comment },
           { withCredentials: true },
         );
@@ -82,6 +80,7 @@ const AddReview = ({
       onClose();
       if (onSuccess) onSuccess();
     } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
       updateToast(toastId, {
         message: err.response?.data?.message || "Something went wrong ❌",
         type: "error",
@@ -137,9 +136,21 @@ const AddReview = ({
             rows="4"
             placeholder="Write your review..."
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= MAX_LENGTH) {
+                setComment(e.target.value);
+              }
+            }}
             className="w-full px-4 py-3 rounded-xl border resize-none"
           />
+
+          <p
+            className={`text-sm mt-1 ${
+              comment.length === MAX_LENGTH ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            {comment.length}/{MAX_LENGTH} characters
+          </p>
 
           {/* Buttons */}
           <div className="flex justify-end gap-3">

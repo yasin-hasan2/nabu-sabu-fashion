@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useToast } from "../ToastContext";
+import API from "../utils/api";
 // import { useNavigate } from "react-router-dom";
 // adjust path
 
@@ -11,14 +12,14 @@ export const useReviews = () => {
 
   const { showToast, updateToast } = useToast();
 
-  const API =
-    import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
+  // const API =
+  //   import.meta.env.VITE_API_URL || "https://nabu-sabu-fashion.onrender.com";
 
   // ✅ GET ALL REVIEWS
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${API}/get-reviews`, {
+      const { data } = await API.get(`api/reviews/get-reviews`, {
         withCredentials: true,
       });
       setReviews(data.reviews); // adjust based on your API response structure
@@ -41,7 +42,7 @@ export const useReviews = () => {
     });
 
     try {
-      await axios.delete(`${API}/delete-review/${id}`, {
+      await API.delete(`api/reviews/delete-review/${id}`, {
         withCredentials: true,
       });
 
@@ -70,8 +71,8 @@ export const useReviews = () => {
     });
 
     try {
-      const { data } = await axios.put(
-        `${API}/api/reviews/update-review/${id}`,
+      const { data } = await API.put(
+        `api/reviews/update-review/${id}`,
         updatedData,
         { withCredentials: true },
       );

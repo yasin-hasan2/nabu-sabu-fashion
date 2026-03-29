@@ -11,7 +11,7 @@ const ReviewCard = ({
   //   console.log("review in ReviewCard:", review);
   return (
     <motion.div
-      className="bg-white p-8 h-60 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between"
+      className="bg-white p-8 h-60 rounded-2xl shadow-md  hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between"
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
@@ -32,9 +32,13 @@ const ReviewCard = ({
         ))}
       </div>
 
-      <p className="text-gray-600 mb-6 italic">"{review.comment}"</p>
+      <p className="text-gray-600 mb-6 italic cursor-pointer">
+        "{review.comment}"
+      </p>
 
-      <div className="font-bold text-gray-800">- {review.name}</div>
+      <div className="font-bold text-gray-800 cursor-pointer">
+        - {review.name}
+      </div>
 
       {user?.role === "admin" && (
         <div className="flex gap-3 mt-3">
